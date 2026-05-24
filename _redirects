@@ -1,0 +1,11 @@
+# Netlify redirects (also works on Cloudflare Pages)
+/home          /                   301
+/marketplace   /browse.html        301
+/escrow        /how-it-works.html  301
+/safety        /trust-safety.html  301
+/cost          /pricing.html       301
+/help          /faq.html           301
+/sell-on-flipit /sell.html         301
+
+# 404 fallback
+/*             /404.html           404

@@ -1,0 +1,52 @@
+[build]
+  publish = "."
+  command = "echo 'Static site - no build needed'"
+
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/marketplace"
+  to = "/browse.html"
+  status = 301
+
+[[redirects]]
+  from = "/escrow"
+  to = "/how-it-works.html"
+  status = 301
+
+[[redirects]]
+  from = "/safety"
+  to = "/trust-safety.html"
+  status = 301
+
+[[redirects]]
+  from = "/cost"
+  to = "/pricing.html"
+  status = 301
+
+[[redirects]]
+  from = "/help"
+  to = "/faq.html"
+  status = 301
+
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

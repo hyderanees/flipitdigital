@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How Escrow Works — FlipIt Digital</title>
+  <meta name="description" content="A deep look into FlipIt Digital's escrow process: KYC verification, payment vault, dispute resolution, and refund-on-revoke guarantees." />
+  <meta name="theme-color" content="#0A0E1A" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%236C5CE7'/%3E%3Cstop offset='1' stop-color='%2300E5FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M32 14 L48 22 V36 C48 44 40 50 32 52 C24 50 16 44 16 36 V22 Z' fill='%23fff' fill-opacity='0.15' stroke='%23fff' stroke-width='2'/%3E%3Cpath d='M26 32 L30 36 L40 26' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <style>
+    .step-card { display:grid; grid-template-columns: 84px 1fr 1fr; gap: 32px; align-items:center; padding: 32px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 18px; backdrop-filter: blur(12px); }
+    @media (max-width: 800px) { .step-card { grid-template-columns: 1fr; gap: 16px; } }
+    .step-num { width: 84px; height: 84px; border-radius: 22px; display:grid; place-items:center; font-family:'Sora', sans-serif; font-weight:800; font-size: 2.2rem; color: white; background: linear-gradient(135deg, var(--primary), var(--cyan)); box-shadow: 0 14px 40px rgba(108, 92, 231, 0.4); }
+    .step-content h3 { font-size: 1.3rem; margin-bottom: 8px; }
+    .step-content p { margin: 0; }
+    .step-visual { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+    .pkt { display:flex; align-items:center; gap:10px; padding:10px 12px; background: rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; margin-bottom:8px; font-size:13px; }
+    .pkt .ic { width:30px; height:30px; border-radius:8px; display:grid; place-items:center; flex-shrink:0; background:rgba(108,92,231,0.18); color:var(--primary-2); }
+    .pkt .ic.green { background: rgba(16,242,160,.18); color: var(--emerald); }
+    .pkt .ic.cyan { background: rgba(0,229,255,.18); color: var(--cyan); }
+    .pkt .ic.amber { background: rgba(255,181,71,.18); color: var(--amber); }
+    .pkt .ic.rose { background: rgba(255,84,120,.18); color: var(--rose); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="brand"><span class="brand-logo"><svg viewBox="0 0 64 64" fill="none"><path d="M32 8 L52 18 V36 C52 46 42 54 32 56 C22 54 12 46 12 36 V18 Z" fill="white" fill-opacity=".15" stroke="white" stroke-width="3"/><path d="M24 32 L30 38 L42 24" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand-name"><b>FlipIt</b> <span>Digital</span></span></a>
+      <nav><ul class="nav-links"><li><a href="browse.html" data-nav="browse.html">Browse</a></li><li><a href="categories.html" data-nav="categories.html">Categories</a></li><li><a href="how-it-works.html" data-nav="how-it-works.html">How Escrow Works</a></li><li><a href="sell.html" data-nav="sell.html">Sell</a></li><li><a href="trust-safety.html" data-nav="trust-safety.html">Trust & Safety</a></li><li><a href="pricing.html" data-nav="pricing.html">Pricing</a></li></ul></nav>
+      <div class="nav-actions"><a href="login.html" class="btn btn-link desktop-only">Sign in</a><a href="signup.html" class="btn btn-primary desktop-only">Get Started</a><button class="menu-toggle" data-menu-toggle><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    </div>
+    <div class="mobile-menu" data-mobile-menu><ul><li><a href="browse.html">Browse</a></li><li><a href="categories.html">Categories</a></li><li><a href="how-it-works.html">How Escrow Works</a></li><li><a href="sell.html">Sell</a></li><li><a href="trust-safety.html">Trust & Safety</a></li><li><a href="pricing.html">Pricing</a></li></ul><div class="stack"><a href="login.html" class="btn btn-ghost btn-block">Sign in</a><a href="signup.html" class="btn btn-primary btn-block">Get Started</a></div></div>
+  </header>
+
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="index.html">Home</a> <span>/</span> <span>How Escrow Works</span></div>
+      <span class="eyebrow cyan">The FlipIt Vault</span>
+      <h1 style="margin-top:14px;">Escrow that <span class="gradient-text">protects every cent</span>.</h1>
+      <p>Your money never touches the seller until you confirm delivery. If anything goes wrong, our team intervenes within 24 hours.</p>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Seller verification & listing</h3>
+          <p>Every seller passes ID + liveness checks before listing. High-value categories require additional review and source-of-asset proof.</p>
+          <ul class="spec-list" style="margin-top:14px;">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Government-issued ID</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Selfie liveness check</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Listing source proof (account history, license proof)</li>
+          </ul>
+        </div>
+        <div class="step-visual">
+          <div class="pkt"><span class="ic green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg></span> KYC complete</div>
+          <div class="pkt"><span class="ic cyan"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span> Listing posted</div>
+          <div class="pkt"><span class="ic amber"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg></span> Awaiting buyer</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Buyer pays into FlipIt vault</h3>
+          <p>The buyer pays via card, crypto, bank, Apple/Google Pay, or local wallets. Funds enter the FlipIt vault — held but not released to the seller.</p>
+          <ul class="spec-list" style="margin-top:14px;">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Multi-currency support (28 fiat, 4 crypto)</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> 3-D Secure & PSD2 compliant</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Funds frozen until confirmation</li>
+          </ul>
+        </div>
+        <div class="step-visual">
+          <div class="pkt"><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M2 11h20"/></svg></span> Card · $129 charged</div>
+          <div class="pkt"><span class="ic green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg></span> Vault locked</div>
+          <div class="pkt"><span class="ic amber"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span> Seller notified</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Seller delivers digital asset</h3>
+          <p>For codes & subscriptions, delivery is automatic. For accounts and inventories, it's done via a secure handoff with chat-based proof.</p>
+          <ul class="spec-list" style="margin-top:14px;">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Auto-release of codes from inventory</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Account email-change supervised by FlipIt</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Encrypted credential handoff</li>
+          </ul>
+        </div>
+        <div class="step-visual">
+          <div class="pkt"><span class="ic cyan"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span> License key issued</div>
+          <div class="pkt"><span class="ic green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3l9 9-9 9" stroke-linecap="round"/></svg></span> Asset delivered</div>
+          <div class="pkt"><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-7.6-4.7L3 21l1.7-3.4A8.5 8.5 0 0 1 12 3a8.38 8.38 0 0 1 9 8.5z"/></svg></span> Chat record saved</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>Buyer confirms within protection window</h3>
+          <p>You have a category-dependent window (24h–14d) to test the asset. Confirm if happy, or open a dispute if not.</p>
+          <ul class="spec-list" style="margin-top:14px;">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Activate code, log into account, etc.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> One-click confirm or open dispute</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Auto-confirm after window if no action</li>
+          </ul>
+        </div>
+        <div class="step-visual">
+          <div class="pkt"><span class="ic green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg></span> Confirm delivery</div>
+          <div class="pkt"><span class="ic rose"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></span> Open a dispute</div>
+          <div class="pkt"><span class="ic amber"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span> Window: 72h</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>Funds released — minus a small fee</h3>
+          <p>Once you confirm, the seller is paid out instantly to wallet. Their wallet balance is withdrawable to bank or crypto in supported regions.</p>
+          <ul class="spec-list" style="margin-top:14px;">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Commission: 5–8% (category-dependent)</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Withdrawal: Bank, USDT, BTC, Wise, JazzCash</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> Approved within minutes for power sellers</li>
+          </ul>
+        </div>
+        <div class="step-visual">
+          <div class="pkt"><span class="ic green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 1 0 0 7H14a3.5 3.5 0 1 1 0 7H6"/></svg></span> +$120.55 to wallet</div>
+          <div class="pkt"><span class="ic cyan"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></span> Order complete</div>
+          <div class="pkt"><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span> Withdraw available</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISPUTE FLOW -->
+  <section class="section">
+    <div class="container">
+      <div class="section-title reveal">
+        <span class="eyebrow rose" style="background: rgba(255,84,120,.1); border-color: rgba(255,84,120,.3); color:var(--rose);">If something goes wrong</span>
+        <h2>Disputes resolved within 24 hours.</h2>
+        <p>Real humans investigate every dispute. We side with whoever has proof — not whoever shouts loudest.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card reveal"><div class="feature-icon rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg></div><h3>1. Open dispute</h3><p>One click on the order page opens a dispute. The escrow remains frozen.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-7.6-4.7L3 21l1.7-3.4A8.5 8.5 0 0 1 12 3a8.38 8.38 0 0 1 9 8.5z"/></svg></div><h3>2. Both parties submit proof</h3><p>Screenshots, recordings, chat history, and the FlipIt audit log are auto-attached.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg></div><h3>3. Human moderator reviews</h3><p>A trained dispute agent reviews within 24h. They reach out for missing info if needed.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg></div><h3>4. Resolution & refund</h3><p>If you're owed a refund, it's issued within 30 minutes — straight back to the original payment method.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="section">
+    <div class="container">
+      <div class="section-title reveal">
+        <span class="eyebrow">Why escrow beats DMs</span>
+        <h2>Compare FlipIt vs. trading on social.</h2>
+      </div>
+
+      <div class="reveal" style="background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-lg); overflow:hidden;">
+        <table style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: rgba(108, 92, 231, 0.08);">
+              <th style="text-align:left; padding:18px 24px; font-weight:700; color:var(--text-1); font-size:14px;">What you get</th>
+              <th style="text-align:center; padding:18px 24px; color:var(--cyan); font-weight:700; font-size:14px;">FlipIt Digital</th>
+              <th style="text-align:center; padding:18px 24px; color:var(--text-3); font-weight:700; font-size:14px;">Discord / Telegram</th>
+              <th style="text-align:center; padding:18px 24px; color:var(--text-3); font-weight:700; font-size:14px;">Direct DMs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:14px 24px; color:var(--text-1);">Funds locked in escrow</td><td style="text-align:center; color:var(--emerald); font-weight:700;">Yes</td><td style="text-align:center; color:var(--rose);">No</td><td style="text-align:center; color:var(--rose);">No</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:14px 24px; color:var(--text-1);">KYC-verified seller</td><td style="text-align:center; color:var(--emerald); font-weight:700;">Yes</td><td style="text-align:center; color:var(--rose);">No</td><td style="text-align:center; color:var(--rose);">No</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:14px 24px; color:var(--text-1);">Dispute resolution</td><td style="text-align:center; color:var(--emerald); font-weight:700;">24h human</td><td style="text-align:center; color:var(--rose);">None</td><td style="text-align:center; color:var(--rose);">None</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:14px 24px; color:var(--text-1);">Refund on bad asset</td><td style="text-align:center; color:var(--emerald); font-weight:700;">Yes</td><td style="text-align:center; color:var(--rose);">No</td><td style="text-align:center; color:var(--rose);">No</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:14px 24px; color:var(--text-1);">Chargeback protection (sellers)</td><td style="text-align:center; color:var(--emerald); font-weight:700;">Yes</td><td style="text-align:center; color:var(--rose);">No</td><td style="text-align:center; color:var(--rose);">No</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:14px 24px; color:var(--text-1);">Inventory snapshot for gaming</td><td style="text-align:center; color:var(--emerald); font-weight:700;">API + screenshots</td><td style="text-align:center; color:var(--rose);">Manual</td><td style="text-align:center; color:var(--rose);">Manual</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:14px 24px; color:var(--text-1);">Multi-currency wallets</td><td style="text-align:center; color:var(--emerald); font-weight:700;">28 currencies</td><td style="text-align:center; color:var(--rose);">No</td><td style="text-align:center; color:var(--rose);">No</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-banner reveal">
+        <span class="eyebrow cyan">Ready to trade safely?</span>
+        <h2>Your first escrow is on us.</h2>
+        <p>Sign up today and your first transaction is escrow-fee-free. Start trading with confidence.</p>
+        <div class="cta-buttons"><a href="signup.html" class="btn btn-emerald btn-lg">Create free account</a><a href="browse.html" class="btn btn-ghost btn-lg">Browse listings</a></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand"><a href="index.html" class="brand" style="margin-bottom:18px;"><span class="brand-logo"><svg viewBox="0 0 64 64" fill="none"><path d="M32 8 L52 18 V36 C52 46 42 54 32 56 C22 54 12 46 12 36 V18 Z" fill="white" fill-opacity=".15" stroke="white" stroke-width="3"/><path d="M24 32 L30 38 L42 24" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand-name"><b>FlipIt</b> <span>Digital</span></span></a><p>The trusted escrow marketplace for digital assets.</p></div>
+        <div class="footer-col"><h5>Marketplace</h5><ul><li><a href="browse.html">Browse</a></li><li><a href="categories.html">Categories</a></li><li><a href="how-it-works.html">How Escrow Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="sell.html">Become a Seller</a></li></ul></div>
+        <div class="footer-col"><h5>Categories</h5><ul><li><a href="browse.html?cat=social">Social Accounts</a></li><li><a href="browse.html?cat=gaming">Gaming</a></li><li><a href="browse.html?cat=ai">AI Subscriptions</a></li><li><a href="browse.html?cat=creative">Creative Software</a></li><li><a href="browse.html?cat=giftcards">Gift Cards</a></li></ul></div>
+        <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="trust-safety.html">Trust & Safety</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+        <div class="footer-col"><h5>Legal</h5><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">AML / KYC</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><div>© <span data-year>2026</span> FlipIt Digital. All rights reserved.</div><div>Built for trust · Powered by escrow</div></div>
+    </div>
+  </footer>
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

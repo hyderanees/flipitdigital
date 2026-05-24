@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Digital Assets — FlipIt Digital Marketplace</title>
+  <meta name="description" content="Browse social accounts, gaming inventories, AI subscriptions, creative software and gift cards in the FlipIt Digital escrow marketplace." />
+  <meta name="theme-color" content="#0A0E1A" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%236C5CE7'/%3E%3Cstop offset='1' stop-color='%2300E5FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M32 14 L48 22 V36 C48 44 40 50 32 52 C24 50 16 44 16 36 V22 Z' fill='%23fff' fill-opacity='0.15' stroke='%23fff' stroke-width='2'/%3E%3Cpath d='M26 32 L30 36 L40 26' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="brand">
+        <span class="brand-logo">
+          <svg viewBox="0 0 64 64" fill="none">
+            <path d="M32 8 L52 18 V36 C52 46 42 54 32 56 C22 54 12 46 12 36 V18 Z" fill="white" fill-opacity=".15" stroke="white" stroke-width="3"/>
+            <path d="M24 32 L30 38 L42 24" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="brand-name"><b>FlipIt</b> <span>Digital</span></span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="browse.html" data-nav="browse.html">Browse</a></li>
+          <li><a href="categories.html" data-nav="categories.html">Categories</a></li>
+          <li><a href="how-it-works.html" data-nav="how-it-works.html">How Escrow Works</a></li>
+          <li><a href="sell.html" data-nav="sell.html">Sell</a></li>
+          <li><a href="trust-safety.html" data-nav="trust-safety.html">Trust & Safety</a></li>
+          <li><a href="pricing.html" data-nav="pricing.html">Pricing</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-link desktop-only">Sign in</a>
+        <a href="signup.html" class="btn btn-primary desktop-only">Get Started</a>
+        <button class="menu-toggle" data-menu-toggle aria-label="Open menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" data-mobile-menu>
+      <ul>
+        <li><a href="browse.html">Browse Marketplace</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="how-it-works.html">How Escrow Works</a></li>
+        <li><a href="sell.html">Sell on FlipIt</a></li>
+        <li><a href="trust-safety.html">Trust & Safety</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+      </ul>
+      <div class="stack">
+        <a href="login.html" class="btn btn-ghost btn-block">Sign in</a>
+        <a href="signup.html" class="btn btn-primary btn-block">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="index.html">Home</a> <span>/</span> <span>Browse</span></div>
+      <h1>The Marketplace</h1>
+      <p>Every listing is escrow-protected. Filter by category, sort by price, search by keyword.</p>
+    </div>
+  </section>
+
+  <!-- BROWSE LAYOUT -->
+  <section class="section-sm">
+    <div class="container">
+      <div class="market-layout">
+        <!-- FILTER PANEL -->
+        <aside class="filter-panel">
+          <div class="filter-group">
+            <h4>Categories</h4>
+            <ul class="filter-list">
+              <li class="active" data-filter-cat="all"><span>All listings</span><span class="count">14,820</span></li>
+              <li data-filter-cat="social"><span>Social media</span><span class="count">4,820</span></li>
+              <li data-filter-cat="gaming"><span>Gaming accounts</span><span class="count">3,200</span></li>
+              <li data-filter-cat="streaming"><span>Streaming</span><span class="count">3,420</span></li>
+              <li data-filter-cat="giftcards"><span>Gift cards</span><span class="count">2,140</span></li>
+              <li data-filter-cat="ai"><span>AI subscriptions</span><span class="count">1,260</span></li>
+              <li data-filter-cat="creative"><span>Creative software</span><span class="count">980</span></li>
+              <li data-filter-cat="growth"><span>Growth services</span><span class="count">1,940</span></li>
+              <li data-filter-cat="subscriptions"><span>Gaming subs</span><span class="count">620</span></li>
+            </ul>
+          </div>
+          <div class="filter-group">
+            <h4>Price</h4>
+            <ul class="filter-list">
+              <li><span>Under $25</span></li>
+              <li><span>$25 – $100</span></li>
+              <li><span>$100 – $500</span></li>
+              <li><span>$500 – $2,000</span></li>
+              <li><span>$2,000+</span></li>
+            </ul>
+          </div>
+          <div class="filter-group">
+            <h4>Trust</h4>
+            <ul class="filter-list">
+              <li><span>Verified seller only</span></li>
+              <li><span>Power seller</span></li>
+              <li><span>Instant delivery</span></li>
+              <li><span>Refund guarantee</span></li>
+            </ul>
+          </div>
+          <div class="filter-group">
+            <h4>Region</h4>
+            <ul class="filter-list">
+              <li><span>Global</span></li>
+              <li><span>US / Americas</span></li>
+              <li><span>Europe</span></li>
+              <li><span>Asia / SEA</span></li>
+              <li><span>MENA</span></li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- PRODUCTS -->
+        <div>
+          <div class="market-toolbar">
+            <div class="search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/></svg>
+              <input id="search" class="search-input" type="search" placeholder="Search by name, niche or platform..." />
+            </div>
+            <select id="sort" class="select">
+              <option value="featured">Sort: Featured</option>
+              <option value="price-asc">Price: Low to high</option>
+              <option value="price-desc">Price: High to low</option>
+              <option value="rating">Top rated</option>
+            </select>
+          </div>
+
+          <div id="product-list" class="products">
+            <a href="product.html" class="product-card" data-cat="social" data-price="3400" data-rating="4.9" data-title="Aged Instagram Lifestyle 250K" data-tags="instagram,social,250k,lifestyle">
+              <div class="product-thumb">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">Verified</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="white"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Instagram · Lifestyle</div>
+                <div class="product-title">Aged IG Page · 250K Followers · 4.8% engagement</div>
+                <div class="product-foot">
+                  <span class="product-price">$3,400</span>
+                  <span class="product-rating"><span class="star">★</span> 4.9 (148)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="creative" data-price="129" data-rating="4.8" data-title="Adobe Creative Cloud" data-tags="adobe,creative cloud,photoshop,subscription">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #FF1F36, #FA0E0E);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">1-yr key</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M2 2l16 8-3 3-7-3"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Creative · Adobe</div>
+                <div class="product-title">Adobe Creative Cloud · All Apps · 1 Year</div>
+                <div class="product-foot">
+                  <span class="product-price">$129</span>
+                  <span class="product-rating"><span class="star">★</span> 4.8 (924)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="ai" data-price="22" data-rating="4.9" data-title="ChatGPT Plus 1 Month" data-tags="chatgpt,openai,ai,gpt-4">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #10A37F, #1A7F64);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">Instant</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2 2M16.4 16.4l2 2M5.6 18.4l2-2M16.4 7.6l2-2"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">AI · ChatGPT</div>
+                <div class="product-title">ChatGPT Plus · 1 Month · GPT-4o + Voice</div>
+                <div class="product-foot">
+                  <span class="product-price">$22</span>
+                  <span class="product-rating"><span class="star">★</span> 4.9 (2,140)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="gaming" data-price="780" data-rating="5" data-title="Valorant Radiant" data-tags="valorant,radiant,riot,game">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #FF4655, #B11E29);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">Snapshot</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M6 12h4M8 10v4M14 12h.01M17 10h.01M20 13a3 3 0 0 1-3 3h-1l-3-3H10l-3 3H6a3 3 0 0 1-3-3v-2a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v2z"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Gaming · Valorant</div>
+                <div class="product-title">Radiant Account · 80+ Skins · Mail accessible</div>
+                <div class="product-foot">
+                  <span class="product-price">$780</span>
+                  <span class="product-rating"><span class="star">★</span> 5.0 (62)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="giftcards" data-price="45" data-rating="4.9" data-title="Google Play Gift 50" data-tags="gift card,google play,instant">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #34A853, #4285F4);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">10% off</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M2 11h20M12 6V20"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Gift Card · Google Play</div>
+                <div class="product-title">Google Play Gift Card · $50 · US Region</div>
+                <div class="product-foot">
+                  <span class="product-price">$45</span>
+                  <span class="product-rating"><span class="star">★</span> 4.9 (3,810)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="ai" data-price="20" data-rating="4.8" data-title="Midjourney Standard" data-tags="midjourney,ai art,stable diffusion">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #1B1F3A, #6C5CE7);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">1 mo</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 3l3 7h7l-5.5 4.5L18 22l-6-4-6 4 1.5-7.5L2 10h7l3-7z"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">AI · Midjourney</div>
+                <div class="product-title">Midjourney Standard Plan · 1 Month</div>
+                <div class="product-foot">
+                  <span class="product-price">$20</span>
+                  <span class="product-rating"><span class="star">★</span> 4.8 (1,212)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="streaming" data-price="9" data-rating="4.9" data-title="Netflix Premium" data-tags="netflix,streaming,4k">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #E50914, #831010);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">Instant</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><polygon points="6,4 20,12 6,20"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Streaming · Netflix</div>
+                <div class="product-title">Netflix Premium · 4K UHD · 1 Month</div>
+                <div class="product-foot">
+                  <span class="product-price">$9</span>
+                  <span class="product-rating"><span class="star">★</span> 4.9 (5,340)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="creative" data-price="49" data-rating="4.7" data-title="Canva Pro Year" data-tags="canva,canva pro,design">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #00C4CC, #7D2AE7);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">12 mo</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 22a10 10 0 1 1 0-20 7 7 0 0 1 0 14h-2a3 3 0 1 0 0 6z"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Creative · Canva</div>
+                <div class="product-title">Canva Pro · 1 Year · Multi-region</div>
+                <div class="product-foot">
+                  <span class="product-price">$49</span>
+                  <span class="product-rating"><span class="star">★</span> 4.7 (1,840)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="gaming" data-price="220" data-rating="4.8" data-title="CSGO Knife Loadout" data-tags="csgo,counter-strike,knife,skins">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #F89B25, #B33A00);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">Snapshot</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M3 3l8 8-3 9 4-4 9 5-7-7L3 3z"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Gaming · CS:GO</div>
+                <div class="product-title">CS:GO Account · Knife + 12 Covert skins</div>
+                <div class="product-foot">
+                  <span class="product-price">$220</span>
+                  <span class="product-rating"><span class="star">★</span> 4.8 (96)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="ai" data-price="34" data-rating="4.9" data-title="Claude Pro" data-tags="claude,anthropic,ai">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #D97757, #B85F45);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">1 mo</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 12a4 4 0 0 1 8 0M9 16a3 3 0 0 0 6 0"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">AI · Claude</div>
+                <div class="product-title">Claude Pro · 200K context · 1 Month</div>
+                <div class="product-foot">
+                  <span class="product-price">$34</span>
+                  <span class="product-rating"><span class="star">★</span> 4.9 (840)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="streaming" data-price="6" data-rating="4.7" data-title="Spotify Premium" data-tags="spotify,music,premium">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #1DB954, #086C24);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">Instant</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M7 10c4-1 8-1 10 1M7 13c4-1 8 0 10 1M7 16c3-1 6 0 8 1"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Streaming · Spotify</div>
+                <div class="product-title">Spotify Premium · Family Plan · 1 Month</div>
+                <div class="product-foot">
+                  <span class="product-price">$6</span>
+                  <span class="product-rating"><span class="star">★</span> 4.7 (4,120)</span>
+                </div>
+              </div>
+            </a>
+
+            <a href="product.html" class="product-card" data-cat="growth" data-price="80" data-rating="4.6" data-title="Real IG Followers 10K" data-tags="growth,instagram,followers">
+              <div class="product-thumb" style="background: linear-gradient(135deg, #FF4F8B, #FFB547);">
+                <span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg> KYC</span>
+                <span class="badge">Real</span>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M3 17l6-6 4 4 8-8M14 7h7v7"/></svg>
+              </div>
+              <div class="product-body">
+                <div class="product-cat">Growth · Instagram</div>
+                <div class="product-title">10K Real IG Followers · Targeted niche</div>
+                <div class="product-foot">
+                  <span class="product-price">$80</span>
+                  <span class="product-rating"><span class="star">★</span> 4.6 (510)</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="text-center mt-4">
+            <button class="btn btn-ghost">Load more listings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand" style="margin-bottom:18px;">
+            <span class="brand-logo">
+              <svg viewBox="0 0 64 64" fill="none">
+                <path d="M32 8 L52 18 V36 C52 46 42 54 32 56 C22 54 12 46 12 36 V18 Z" fill="white" fill-opacity=".15" stroke="white" stroke-width="3"/>
+                <path d="M24 32 L30 38 L42 24" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="brand-name"><b>FlipIt</b> <span>Digital</span></span>
+          </a>
+          <p>The trusted escrow marketplace for digital assets. Buy, sell, and trade with confidence.</p>
+        </div>
+        <div class="footer-col"><h5>Marketplace</h5><ul><li><a href="browse.html">Browse</a></li><li><a href="categories.html">Categories</a></li><li><a href="how-it-works.html">How Escrow Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="sell.html">Become a Seller</a></li></ul></div>
+        <div class="footer-col"><h5>Categories</h5><ul><li><a href="browse.html?cat=social">Social Accounts</a></li><li><a href="browse.html?cat=gaming">Gaming</a></li><li><a href="browse.html?cat=ai">AI Subscriptions</a></li><li><a href="browse.html?cat=creative">Creative Software</a></li><li><a href="browse.html?cat=giftcards">Gift Cards</a></li></ul></div>
+        <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="trust-safety.html">Trust & Safety</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+        <div class="footer-col"><h5>Legal</h5><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">AML / KYC</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <div>© <span data-year>2026</span> FlipIt Digital. All rights reserved.</div>
+        <div>Built for trust · Powered by escrow</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
