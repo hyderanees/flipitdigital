@@ -18,20 +18,25 @@
   function injectBackground() {
     if (document.querySelector('.bg-canvas')) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Mobile / low-power detection — coarse pointer OR narrow viewport OR reduced motion
+    const isCoarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const isNarrow = window.innerWidth <= 720;
+    const lite = reduce || isCoarse || isNarrow;
 
     const canvas = document.createElement('div');
-    canvas.className = 'bg-canvas';
+    canvas.className = 'bg-canvas' + (lite ? ' lite' : '');
     canvas.setAttribute('aria-hidden', 'true');
 
-    // Aurora orbs (5)
-    for (let i = 1; i <= 5; i++) {
+    // Aurora orbs — fewer on mobile (just 3 instead of 5, lighter blur via CSS .lite)
+    const auroraCount = lite ? 3 : 5;
+    for (let i = 1; i <= auroraCount; i++) {
       const o = document.createElement('div');
       o.className = `aurora aurora-${i}`;
       canvas.appendChild(o);
     }
 
-    if (!reduce) {
-      // Pulsing rings (5)
+    if (!reduce && !lite) {
+      // FULL desktop scene
       const rings = document.createElement('div');
       rings.className = 'stars';
       for (let i = 1; i <= 5; i++) {
@@ -41,7 +46,6 @@
       }
       canvas.appendChild(rings);
 
-      // Star field
       const stars = document.createElement('div');
       stars.className = 'stars';
       const starColors = ['', '', '', 'cyan', 'violet', 'green'];
@@ -58,7 +62,6 @@
       }
       canvas.appendChild(stars);
 
-      // Shooting stars / meteors
       const meteors = document.createElement('div');
       meteors.className = 'stars';
       const meteorColors = ['', 'violet', 'green'];
@@ -72,7 +75,6 @@
       }
       canvas.appendChild(meteors);
 
-      // Rising particles
       const particles = document.createElement('div');
       particles.className = 'stars';
       const particleColors = ['', 'cyan', 'green'];
@@ -87,7 +89,6 @@
       }
       canvas.appendChild(particles);
 
-      // Floating themed icons
       const icons = document.createElement('div');
       icons.className = 'stars';
       const iconNames = ['shield', 'lock', 'coin', 'bolt', 'gift', 'diamond', 'star', 'chart'];
@@ -107,16 +108,30 @@
       });
       canvas.appendChild(icons);
 
-      // Scanning light beam
       const beam = document.createElement('div');
       beam.className = 'beam';
       canvas.appendChild(beam);
+    } else if (!reduce && lite) {
+      // LIGHTWEIGHT mobile scene — small star field only, no filters/meteors/icons/beam
+      const stars = document.createElement('div');
+      stars.className = 'stars';
+      const starColors = ['', 'cyan', 'violet'];
+      for (let i = 0; i < 24; i++) {
+        const s = document.createElement('span');
+        s.className = `star ${starColors[i % starColors.length]}`.trim();
+        s.style.left = `${Math.random() * 100}%`;
+        s.style.top = `${Math.random() * 100}%`;
+        s.style.setProperty('--dur', `${4 + Math.random() * 5}s`);
+        s.style.setProperty('--delay', `${Math.random() * 6}s`);
+        stars.appendChild(s);
+      }
+      canvas.appendChild(stars);
     }
 
     document.body.prepend(canvas);
 
-    // Subtle mouse parallax — nudges the whole canvas based on cursor position
-    if (!reduce && window.matchMedia('(pointer: fine)').matches) {
+    // Mouse parallax — desktop only (gated on pointer: fine + non-lite)
+    if (!reduce && !lite && window.matchMedia('(pointer: fine)').matches) {
       let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
       const STRENGTH = 12;
       window.addEventListener('mousemove', (e) => {
