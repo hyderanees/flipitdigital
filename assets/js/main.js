@@ -260,7 +260,7 @@
       },
       order: null,
       seed: [
-        { from: 'them', text: "Hi! I'm the FlipIt AI Assistant. Ask me about **escrow**, **KYC**, **fees**, **disputes**, **refunds**, or how to **list an asset** — anything across the platform.", offset: 1000 * 60 * 12 },
+        { from: 'them', text: "Hi! I'm the FlipIt AI Assistant. Ask me about **escrow**, the **Insurance Period**, **KYC** for sellers, **fees**, **disputes**, **refunds**, or how to **list an asset**.", offset: 1000 * 60 * 12 },
         { from: 'them', text: "Try one of the quick replies below to get started.", offset: 1000 * 60 * 11 }
       ]
     },
@@ -355,32 +355,37 @@
   const BOT_RULES = [
     {
       match: /(escrow|how.*safe|hold.*funds|fund.*hold|protect)/i,
-      reply: () => "**Escrow** holds the buyer's funds while the seller delivers. Money only releases when *both* sides confirm the transfer is complete. If anything goes wrong, you can open a **dispute** within 14 days and FlipIt's mediation team takes over.",
+      reply: () => "**Escrow** holds the buyer's funds the moment payment is made. The seller doesn't see a cent until **you confirm delivery**. If the buyer doesn't respond within **48 hours** of delivery, the order auto-confirms and funds enter the seller's **Insurance Period**.",
       quick: ['How long does delivery take?', 'What if the seller never delivers?']
     },
     {
+      match: /(insurance.period|floating|available.balance|wallet|withdraw)/i,
+      reply: () => "After buyer confirmation, seller funds first land in **Floating Balance** during the **Insurance Period** (varies by category — shown at listing). When that ends, funds move to **Available Balance** and become withdrawable. Manage everything in your Profile → **Wallet**.",
+      quick: ['Take me to Wallet', 'How long is the Insurance Period?']
+    },
+    {
       match: /(kyc|identity|verif|id check|document)/i,
-      reply: () => "Every seller goes through **KYC verification** — government ID + liveness check. High-volume sellers also do business verification. You'll see a cyan ✓ badge next to verified accounts. KYC typically completes in **under 4 minutes**.",
+      reply: () => "Every seller must complete identity verification before listing or receiving payouts: a **government-issued ID** from your country of residence + a **selfie video**. Buyers register with email only — no KYC needed to buy. (See Section 2.7 of our Terms.)",
       quick: ['What docs do I need?', 'Is KYC required to buy?']
     },
     {
       match: /(fee|cost|charge|commission|how much.*you take|pricing)/i,
-      reply: () => "FlipIt's fee is **3.5% of the sale price**, deducted from the seller. Buyers pay no platform fee. Stripe/PayPal processing is included. Premium sellers (over $50k volume) drop to **2.9%**.\n\nSee the full breakdown on the [Pricing page](pricing.html).",
+      reply: () => "FlipIt charges a **5–8% commission** on successful sales depending on tier (Power Sellers pay 5%, Pro Sellers 6.5%, Starter 8%). Buyers pay no platform fee. Withdrawals carry standard payment-method fees ($0–$2).\n\nSee the full breakdown on the [Pricing page](pricing.html).",
       quick: ['Are there hidden fees?', 'Do I pay tax?']
     },
     {
       match: /(dispute|refund|cancel|problem|issue|fraud|scam)/i,
-      reply: () => "Sorry to hear that. Open a **dispute** from your dashboard and a mediator joins within **24 hours**. Funds stay in escrow throughout. ~92% of disputes resolve within 48 hours, and the buyer is fully refunded if the seller can't prove delivery.",
-      quick: ['Open a dispute', 'Talk to a human']
+      reply: () => "Open a ticket from your **Profile → Contact Support** and select \"Issue with an order\". Attach all evidence — screen recordings of the credential handover and login attempt make a huge difference. Our **Dispute Resolution Team** typically resolves cases within **7–8 business days**. The escrow stays frozen the entire time.",
+      quick: ['Open a ticket', 'Talk to a human']
     },
     {
       match: /(list|sell|how.*sell|sell my|put up|create listing)/i,
-      reply: () => "Selling on FlipIt is free to start:\n\n1. Click **Sell** in the nav\n2. Pick a category (Software, Domain, SaaS, Creator, etc.)\n3. Describe the asset, upload proof of ownership\n4. Set your price\n\nListings go live after a quick review (~2 hours). You only pay the 3.5% fee when something sells.",
+      reply: () => "Selling on FlipIt:\n\n1. Sign up and complete **identity verification** (Section 2.7)\n2. Click **Sell** and pick a category\n3. List something **you own** — third-party data, hacked accounts, malware, gambling tools, etc. are strictly prohibited\n4. After a sale, funds enter the **Insurance Period** then become withdrawable\n\nCommission is only charged when you sell.",
       quick: ['Take me to Sell page', 'What can I sell?']
     },
     {
       match: /(deliver|delivery|how long|when.*get|receive)/i,
-      reply: () => "Most digital assets deliver in **under 30 minutes**. Domains and SaaS transfers can take 24-72 hours depending on the registrar/provider. The seller has up to **7 days** to deliver, otherwise escrow auto-refunds.",
+      reply: () => "Most digital assets deliver in **under 30 minutes**. Domains and SaaS transfers can take 24–72 hours depending on the registrar/provider. After delivery you have **48 hours** to confirm or open a dispute — otherwise the order auto-confirms.",
       quick: ['Track my order', 'Contact the seller']
     },
     {
@@ -406,7 +411,7 @@
     {
       match: /^\s*(hi|hey|hello|yo|sup|gm|gn|good (morning|evening|afternoon))/i,
       reply: () => "Hey there! 👋 Welcome to FlipIt. What can I help you with today?",
-      quick: ['How escrow works', 'How to sell', 'See pricing']
+      quick: ['How escrow works', 'Insurance Period', 'How to sell', 'See pricing']
     }
   ];
   const BOT_FALLBACK = [
@@ -414,7 +419,7 @@
     "Hmm, I'm not 100% sure I caught that. Want me to connect you with a human agent?",
     "Let me know which part you'd like to dig into — escrow, KYC, fees, listings, or something else?"
   ];
-  const BOT_DEFAULT_QUICK = ['How escrow works', 'KYC verification', 'Pricing', 'Open a dispute', 'How to sell'];
+  const BOT_DEFAULT_QUICK = ['How escrow works', 'Insurance Period', 'KYC for sellers', 'Open a ticket', 'How to sell'];
 
   function botPickReply(text) {
     const t = (text || '').toLowerCase();
@@ -465,9 +470,6 @@
   let replyingTo = null;
   let searchQuery = '';
   let unreadInThis = 0;
-  let recording = false;
-  let recStart = 0;
-  let recInterval = null;
   let typingTimer = null;
 
   // For seller chats: who am I in the conversation
@@ -636,9 +638,6 @@
             <button class="chat-icon-btn" data-action="search" title="Search" aria-label="Search">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4" stroke-linecap="round"/></svg>
             </button>
-            <button class="chat-icon-btn" data-action="call" title="Call (demo)" aria-label="Call">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            </button>
             <div class="chat-more-wrap">
               <button class="chat-icon-btn" data-action="more" title="More" aria-label="More">
                 <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg>
@@ -648,7 +647,6 @@
                 <button type="button" data-action="mute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" stroke-linecap="round"/></svg> Mute notifications</button>
                 <button type="button" data-action="block" data-seller-only><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M5 5l14 14" stroke-linecap="round"/></svg> Block user</button>
                 <button type="button" data-action="report" data-seller-only><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V4l16-1v14L4 21zM4 14h16"/></svg> Report</button>
-                <button type="button" data-action="clear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg> Clear conversation</button>
               </div>
             </div>
             <button class="chat-icon-btn" data-action="close" title="Close" aria-label="Close">
@@ -696,9 +694,6 @@
           <button type="button" class="chat-icon-btn" data-action="emoji" title="Emoji" aria-label="Emoji">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c.85 1.2 2 2 3 2s2.15-.8 3-2"/></svg>
           </button>
-          <button type="button" class="chat-icon-btn" data-action="record" title="Voice note" aria-label="Voice note" data-seller-only>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
-          </button>
           <textarea class="chat-input" data-chat-input rows="1" placeholder="Type a message..."></textarea>
           <button class="chat-send" type="submit" aria-label="Send">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -706,14 +701,6 @@
         </form>
 
         <input type="file" data-file-input multiple accept="image/*,application/pdf,.doc,.docx,.txt,.zip" hidden />
-
-        <div class="chat-recording" data-recording>
-          <div class="rec-dot"></div>
-          <div class="rec-time" data-rec-time>0:00</div>
-          <div class="rec-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <button type="button" class="chat-icon-btn" data-action="cancel-rec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
-          <button type="button" class="chat-send" data-action="send-rec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        </div>
       </div>
     `;
 
@@ -747,8 +734,6 @@
   const searchInput  = panel.querySelector('[data-search-input]');
   const scrollBtn    = panel.querySelector('[data-scroll-bottom]');
   const scrollBadge  = panel.querySelector('[data-scroll-badge]');
-  const recBox       = panel.querySelector('[data-recording]');
-  const recTime      = panel.querySelector('[data-rec-time]');
   const orderCard    = panel.querySelector('[data-order-card]');
   const quickReplies = panel.querySelector('[data-quick-replies]');
   const peerAvatarEl = panel.querySelector('[data-peer-avatar]');
@@ -760,8 +745,6 @@
     const conv = allConvs[convId];
     if (!conv || !conv.messages.length) return '';
     const last = conv.messages[conv.messages.length - 1];
-    if (last.deleted) return 'Message deleted';
-    if (last.kind === 'voice') return '🎤 Voice message';
     if (last.attachments?.length) {
       const has = last.attachments[0];
       return (has.type === 'image' ? '📷 Photo' : '📎 ' + (has.name || 'File'));
@@ -977,12 +960,6 @@
         m.attachments.forEach(a => atts.appendChild(renderAttachment(a)));
         bubble.appendChild(atts);
       }
-      if (m.kind === 'voice') {
-        const v = document.createElement('div');
-        v.className = 'msg-voice';
-        v.innerHTML = `<button class="voice-play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></button><div class="voice-bars">${'<span></span>'.repeat(20)}</div><span class="voice-dur">${m.duration || '0:00'}</span>`;
-        bubble.appendChild(v);
-      }
       if (m.text) {
         const t = document.createElement('div');
         t.className = 'msg-text';
@@ -1011,8 +988,6 @@
     actions.innerHTML = `
       <button class="msg-act" data-react title="React"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c.85 1.2 2 2 3 2s2.15-.8 3-2"/></svg></button>
       <button class="msg-act" data-reply title="Reply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17l-6-6 6-6M3 11h11a7 7 0 0 1 7 7v3"/></svg></button>
-      ${isMe && !m.deleted ? '<button class="msg-act" data-edit title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg></button>' : ''}
-      ${isMe && !m.deleted ? '<button class="msg-act" data-delete title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>' : ''}
     `;
     bubble.appendChild(actions);
 
@@ -1031,10 +1006,6 @@
       popover.classList.add('open');
     });
     actions.querySelector('[data-reply]').addEventListener('click', () => startReply(m.id));
-    if (isMe && !m.deleted) {
-      actions.querySelector('[data-edit]').addEventListener('click', () => editMessage(m.id));
-      actions.querySelector('[data-delete]').addEventListener('click', () => deleteMessage(m.id));
-    }
 
     wrap.appendChild(bubble);
 
@@ -1110,19 +1081,6 @@
     if (conv.type === 'bot') {
       botRespond(text);
     }
-  }
-
-  function sendVoiceNote(durSec) {
-    const conv = activeConv();
-    if (!conv) return;
-    const ME = meRoleFor(conv);
-    const min = Math.floor(durSec / 60), sec = Math.floor(durSec % 60);
-    const dur = `${min}:${String(sec).padStart(2, '0')}`;
-    activeState().messages.push({ id: uid(), from: ME, kind: 'voice', duration: dur, ts: Date.now(), reactions: {}, status: 'sent' });
-    activeState().lastUpdated = Date.now();
-    saveAll(allConvs);
-    renderMessages();
-    body.scrollTop = body.scrollHeight;
   }
 
   function botRespond(userText) {
@@ -1217,25 +1175,6 @@
     const idx = arr.indexOf(ME);
     if (idx >= 0) arr.splice(idx, 1); else arr.push(ME);
     if (arr.length === 0) delete m.reactions[emoji]; else m.reactions[emoji] = arr;
-    saveAll(allConvs);
-    renderMessages();
-  }
-
-  function deleteMessage(id) {
-    if (!confirm('Delete this message?')) return;
-    const m = activeState().messages.find(x => x.id === id);
-    if (!m) return;
-    m.deleted = true; m.text = ''; m.attachments = undefined;
-    saveAll(allConvs);
-    renderMessages();
-  }
-
-  function editMessage(id) {
-    const m = activeState().messages.find(x => x.id === id);
-    if (!m) return;
-    const newText = prompt('Edit message:', m.text || '');
-    if (newText == null) return;
-    m.text = newText; m.edited = true;
     saveAll(allConvs);
     renderMessages();
   }
@@ -1391,16 +1330,6 @@
   panel.querySelector('[data-action="mute"]').addEventListener('click', () => alert('Notifications muted for this conversation.'));
   panel.querySelector('[data-action="block"]').addEventListener('click', () => alert('User blocked. They can no longer message you (demo).'));
   panel.querySelector('[data-action="report"]').addEventListener('click', () => alert('Report submitted to FlipIt Trust & Safety. Reference #' + Math.random().toString(36).slice(2, 8).toUpperCase()));
-  panel.querySelector('[data-action="clear"]').addEventListener('click', () => {
-    if (!confirm('Clear this conversation?')) return;
-    if (activeState()) {
-      activeState().messages = [];
-      saveAll(allConvs);
-      renderMessages();
-    }
-  });
-  panel.querySelector('[data-action="call"]').addEventListener('click', () => alert('Voice/video calls are coming soon. (Demo only)'));
-
   // Search (in conversation)
   panel.querySelector('[data-action="search"]').addEventListener('click', () => { searchBar.classList.add('open'); searchInput.focus(); });
   panel.querySelector('[data-action="search-close"]').addEventListener('click', () => { searchBar.classList.remove('open'); searchInput.value = ''; searchQuery = ''; renderMessages(); });
@@ -1419,25 +1348,6 @@
   panel.addEventListener('drop', (e) => { e.preventDefault(); panel.classList.remove('drag'); if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files); });
 
   panel.querySelector('[data-action="emoji"]').addEventListener('click', () => renderEmojiTray(!emojiTray.classList.contains('open')));
-
-  panel.querySelector('[data-action="record"]').addEventListener('click', () => {
-    if (recording) return;
-    recording = true; recStart = Date.now();
-    recBox.classList.add('open'); panel.classList.add('recording');
-    recInterval = setInterval(() => {
-      const s = Math.floor((Date.now() - recStart) / 1000);
-      recTime.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    }, 250);
-  });
-  panel.querySelector('[data-action="cancel-rec"]').addEventListener('click', () => {
-    recording = false; clearInterval(recInterval); recBox.classList.remove('open'); panel.classList.remove('recording'); recTime.textContent = '0:00';
-  });
-  panel.querySelector('[data-action="send-rec"]').addEventListener('click', () => {
-    if (!recording) return;
-    const dur = Math.max(1, (Date.now() - recStart) / 1000);
-    recording = false; clearInterval(recInterval); recBox.classList.remove('open'); panel.classList.remove('recording'); recTime.textContent = '0:00';
-    sendVoiceNote(dur);
-  });
 
   function autoResize() {
     input.style.height = 'auto';

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile - FlipIt Digital</title>
+  <meta name="description" content="Your FlipIt Digital profile - wallet, contact support, and tickets." />
+  <meta name="theme-color" content="#0A0E1A" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css?v=7" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%236C5CE7'/%3E%3Cstop offset='1' stop-color='%2300E5FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M32 14 L48 22 V36 C48 44 40 50 32 52 C24 50 16 44 16 36 V22 Z' fill='%23fff' fill-opacity='0.15' stroke='%23fff' stroke-width='2'/%3E%3Cpath d='M26 32 L30 36 L40 26' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <style>
+    .profile-tabs { display: flex; gap: 4px; padding: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 24px; overflow-x: auto; }
+    .profile-tabs button { flex: 1; min-width: 120px; padding: 10px 14px; background: transparent; border: 0; color: var(--text-2); font-weight: 600; font-size: 14px; border-radius: 10px; cursor: pointer; transition: background 0.18s, color 0.18s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .profile-tabs button.active { background: linear-gradient(135deg, var(--primary), var(--cyan)); color: white; box-shadow: 0 6px 16px rgba(108,92,231,0.35); }
+    .profile-tabs button svg { width: 14px; height: 14px; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .wallet-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+    .wallet-card.floating { background: linear-gradient(135deg, rgba(255, 181, 71, 0.08), rgba(108, 92, 231, 0.08)); border-color: rgba(255, 181, 71, 0.25); }
+    .wallet-card.available { background: linear-gradient(135deg, rgba(0, 245, 212, 0.08), rgba(20, 214, 143, 0.08)); border-color: rgba(0, 245, 212, 0.25); }
+    .wallet-amount { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 2.4rem; color: var(--text-0); letter-spacing: -1px; margin: 6px 0; }
+    .wallet-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); margin-top: 10px; }
+    .wallet-row.frozen { border-color: rgba(255, 99, 132, 0.4); background: rgba(255, 99, 132, 0.06); }
+    .wallet-meta { font-size: 11.5px; color: var(--text-3); margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .wallet-amt { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16px; color: var(--cyan); }
+    .countdown { font-family: 'Sora', sans-serif; font-weight: 700; padding: 4px 8px; border-radius: 999px; background: rgba(108, 92, 231, 0.15); color: var(--primary-2); font-size: 11px; }
+    .frozen-tag { padding: 3px 8px; border-radius: 999px; background: rgba(255, 99, 132, 0.15); color: #ff6384; font-size: 10.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+    .ticket-row { padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.18s, transform 0.18s; }
+    .ticket-row:hover { border-color: var(--cyan); transform: translateY(-2px); }
+    .ticket-status { padding: 3px 10px; border-radius: 999px; font-size: 10.5px; font-weight: 700; }
+    .ticket-status.open { background: rgba(255, 181, 71, 0.18); color: #ffb547; }
+    .ticket-status.review { background: rgba(108, 92, 231, 0.18); color: var(--primary-2); }
+    .ticket-status.resolved { background: rgba(0, 245, 212, 0.18); color: var(--cyan); }
+    .ticket-status.closed { background: rgba(255,255,255,0.08); color: var(--text-3); }
+    .rich-toolbar { display: flex; gap: 4px; padding: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px 10px 0 0; border-bottom: 0; }
+    .rich-toolbar button { width: 30px; height: 30px; border: 0; background: transparent; color: var(--text-2); cursor: pointer; border-radius: 6px; display: grid; place-items: center; }
+    .rich-toolbar button:hover { background: rgba(255,255,255,0.06); color: var(--text-0); }
+    .rich-toolbar button svg { width: 14px; height: 14px; }
+    .rich-editor { min-height: 140px; padding: 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 0 0 10px 10px; color: var(--text-0); outline: none; line-height: 1.55; font-size: 14px; }
+    .rich-editor:empty:before { content: attr(data-placeholder); color: var(--text-3); pointer-events: none; }
+    .rich-editor:focus { border-color: var(--cyan); }
+    .att-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; background: rgba(0, 245, 212, 0.1); border: 1px solid rgba(0, 245, 212, 0.3); border-radius: 999px; font-size: 11.5px; color: var(--cyan); margin: 4px 4px 0 0; }
+    .att-pill button { background: transparent; border: 0; color: var(--cyan); cursor: pointer; padding: 0; line-height: 1; font-size: 14px; }
+    .profile-side { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; height: fit-content; position: sticky; top: 100px; }
+    .profile-avatar { width: 84px; height: 84px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--cyan)); color: white; display: grid; place-items: center; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 2rem; margin: 0 auto 14px; }
+    .verify-row { display: flex; align-items: center; gap: 8px; padding: 10px; background: rgba(0, 245, 212, 0.08); border: 1px solid rgba(0, 245, 212, 0.25); border-radius: 10px; margin-top: 14px; font-size: 12px; color: var(--cyan); font-weight: 600; }
+    @media (max-width: 900px) {
+      .profile-layout { grid-template-columns: 1fr !important; }
+      .profile-side { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="brand"><span class="brand-logo"><svg viewBox="0 0 64 64" fill="none"><path d="M32 8 L52 18 V36 C52 46 42 54 32 56 C22 54 12 46 12 36 V18 Z" fill="white" fill-opacity=".15" stroke="white" stroke-width="3"/><path d="M24 32 L30 38 L42 24" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand-name"><b>FlipIt</b> <span>Digital</span></span></a>
+      <nav><ul class="nav-links"><li><a href="browse.html" data-nav="browse.html">Browse</a></li><li><a href="categories.html" data-nav="categories.html">Categories</a></li><li><a href="how-it-works.html" data-nav="how-it-works.html">How Escrow Works</a></li><li><a href="sell.html" data-nav="sell.html">Sell</a></li><li><a href="trust-safety.html" data-nav="trust-safety.html">Trust &amp; Safety</a></li><li><a href="pricing.html" data-nav="pricing.html">Pricing</a></li></ul></nav>
+      <div class="nav-actions"><a href="dashboard.html" class="btn btn-ghost btn-sm desktop-only">Dashboard</a><a href="#" class="seller-avatar" style="width:36px; height:36px; font-size:13px;">HQ</a><button class="menu-toggle" data-menu-toggle><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    </div>
+    <div class="mobile-menu" data-mobile-menu><ul><li><a href="browse.html">Browse</a></li><li><a href="categories.html">Categories</a></li><li><a href="how-it-works.html">How Escrow Works</a></li><li><a href="sell.html">Sell</a></li><li><a href="trust-safety.html">Trust &amp; Safety</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="dashboard.html">Dashboard</a></li></ul></div>
+  </header>
+
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="index.html">Home</a> <span>/</span> <span>Profile</span></div>
+      <h1>Your Profile</h1>
+      <p>Wallet, support tickets, and account settings — all in one place.</p>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="profile-layout" style="display:grid; grid-template-columns: 280px 1fr; gap:28px;">
+
+        <!-- SIDE PROFILE CARD -->
+        <aside class="profile-side reveal">
+          <div class="profile-avatar">HQ</div>
+          <div style="text-align:center;">
+            <div style="font-family:'Sora',sans-serif; font-weight:700; font-size:1.05rem;">Haider Q.</div>
+            <div style="font-size:12px; color:var(--text-3);">haider@flipitdigital.com</div>
+            <div style="margin-top:10px; padding:4px 10px; display:inline-flex; gap:6px; align-items:center; border-radius:999px; background:rgba(0,245,212,0.1); color:var(--cyan); font-size:11px; font-weight:700;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4" stroke-linecap="round"/></svg>
+              KYC Verified Seller
+            </div>
+          </div>
+
+          <div class="verify-row">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
+            ID + selfie video verified
+          </div>
+
+          <div style="margin-top:18px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text-3);">Member since</span><span>Jan 2026</span></div>
+            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text-3);">Total orders</span><span style="color:var(--text-0); font-weight:700;">142</span></div>
+            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text-3);">Rating</span><span style="color:var(--cyan); font-weight:700;">★ 4.9</span></div>
+            <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:13px;"><span style="color:var(--text-3);">Profile balance</span><span style="color:var(--text-0); font-weight:700;">$0.00</span></div>
+          </div>
+
+          <a href="dashboard.html" class="btn btn-primary btn-block btn-sm" style="margin-top:18px;">Go to Dashboard</a>
+        </aside>
+
+        <!-- MAIN -->
+        <div>
+          <!-- TABS -->
+          <div class="profile-tabs reveal" role="tablist">
+            <button class="active" data-tab="wallet" role="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+              Wallet
+            </button>
+            <button data-tab="support" role="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 1 1 5.8 1.5c-.4 1.5-2.9 1.5-2.9 3"/><path d="M12 17h.01"/></svg>
+              Contact Support
+            </button>
+            <button data-tab="tickets" role="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM14 3v6h7M9 13h6M9 17h6M9 9h1"/></svg>
+              My Tickets
+              <span class="pill pending" style="margin-left:4px; padding:2px 8px;">2</span>
+            </button>
+          </div>
+
+          <!-- WALLET TAB -->
+          <div class="tab-pane active" data-pane="wallet">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:18px;" class="reveal">
+              <div class="wallet-card floating">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="color:#ffb547;"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>
+                  <span style="font-size:12px; color:var(--text-3); font-weight:700; letter-spacing:0.6px; text-transform:uppercase;">Floating Balance</span>
+                </div>
+                <div class="wallet-amount">$1,290.00</div>
+                <div style="font-size:12px; color:var(--text-3);">In Insurance Period &middot; not yet withdrawable</div>
+              </div>
+              <div class="wallet-card available">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="color:var(--cyan);"><path d="M5 12l5 5L20 7" stroke-linecap="round"/></svg>
+                  <span style="font-size:12px; color:var(--text-3); font-weight:700; letter-spacing:0.6px; text-transform:uppercase;">Available Balance</span>
+                </div>
+                <div class="wallet-amount">$3,512.40</div>
+                <button class="btn btn-primary btn-sm" data-withdraw>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Withdraw
+                </button>
+              </div>
+            </div>
+
+            <div class="panel reveal" style="margin-top:18px;">
+              <div class="panel-head">
+                <h3 style="margin:0;">Floating Balance breakdown</h3>
+                <span style="font-size:11.5px; color:var(--text-3);">Funds confirmed - awaiting Insurance Period</span>
+              </div>
+              <div class="wallet-row">
+                <div>
+                  <div style="font-size:13.5px; font-weight:700;">Order #FD-49281 &middot; Adobe Creative Cloud 1Y</div>
+                  <div class="wallet-meta">Buyer: jonas_l &middot; Confirmed 2 days ago <span class="countdown">12d 14h left</span></div>
+                </div>
+                <span class="wallet-amt">$129.00</span>
+              </div>
+              <div class="wallet-row">
+                <div>
+                  <div style="font-size:13.5px; font-weight:700;">Order #FD-49264 &middot; ChatGPT Plus 1mo</div>
+                  <div class="wallet-meta">Buyer: m.tavares &middot; Confirmed 4 days ago <span class="countdown">10d 6h left</span></div>
+                </div>
+                <span class="wallet-amt">$22.00</span>
+              </div>
+              <div class="wallet-row frozen">
+                <div>
+                  <div style="font-size:13.5px; font-weight:700;">Order #FD-48720 &middot; TaskFlow SaaS Bundle</div>
+                  <div class="wallet-meta">
+                    <span class="frozen-tag"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Disputed</span>
+                    Mediation team is reviewing &middot; frozen until resolved
+                  </div>
+                </div>
+                <span class="wallet-amt">$1,139.00</span>
+              </div>
+
+              <div style="margin-top:18px; padding:14px; background:rgba(0, 245, 212, 0.04); border:1px solid rgba(0, 245, 212, 0.18); border-radius:12px; font-size:12.5px; color:var(--text-2); display:flex; gap:10px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--cyan); flex-shrink:0;"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+                <div>The Insurance Period varies by category and is shown at the time of listing &amp; checkout. Once it ends, funds move to your Available Balance and you'll be notified by email.</div>
+              </div>
+            </div>
+
+            <div class="panel reveal" style="margin-top:18px;">
+              <div class="panel-head">
+                <h3 style="margin:0;">Recent withdrawals</h3>
+                <a href="#" class="btn btn-sm btn-link">View all</a>
+              </div>
+              <table style="width:100%; border-collapse: collapse; font-size:13px;">
+                <thead><tr style="background: rgba(108, 92, 231, 0.06);">
+                  <th style="text-align:left; padding:12px 14px; font-weight:700; color:var(--text-1);">Date</th>
+                  <th style="text-align:left; padding:12px 14px; font-weight:700; color:var(--text-1);">Method</th>
+                  <th style="text-align:right; padding:12px 14px; font-weight:700; color:var(--text-1);">Amount</th>
+                  <th style="text-align:right; padding:12px 14px; font-weight:700; color:var(--text-1);">Status</th>
+                </tr></thead>
+                <tbody>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:12px 14px;">May 22, 2026</td><td style="padding:12px 14px;">Bank transfer &middot; ****4218</td><td style="padding:12px 14px; text-align:right; font-weight:700; color:var(--text-0);">$1,400.00</td><td style="padding:12px 14px; text-align:right;"><span class="pill success">Completed</span></td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:12px 14px;">May 14, 2026</td><td style="padding:12px 14px;">USDT (TRC-20)</td><td style="padding:12px 14px; text-align:right; font-weight:700; color:var(--text-0);">$580.00</td><td style="padding:12px 14px; text-align:right;"><span class="pill success">Completed</span></td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:12px 14px;">May 06, 2026</td><td style="padding:12px 14px;">Wise &middot; EUR</td><td style="padding:12px 14px; text-align:right; font-weight:700; color:var(--text-0);">$960.00</td><td style="padding:12px 14px; text-align:right;"><span class="pill success">Completed</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUPPORT TAB -->
+          <div class="tab-pane" data-pane="support">
+            <div class="panel reveal">
+              <div class="panel-head">
+                <h3 style="margin:0;">Submit a Support Ticket</h3>
+                <span style="font-size:11.5px; color:var(--text-3);">We typically reply in 4 hours - dispute investigations take 7 to 8 business days.</span>
+              </div>
+
+              <form id="ticket-form">
+                <div class="field">
+                  <label>What brought you here? <span style="color:#ff6384;">*</span></label>
+                  <select class="input" name="category" id="ticket-category" required>
+                    <option value="">Select a topic...</option>
+                    <option value="order">Issue with an order</option>
+                    <option value="payment">Payment issue</option>
+                    <option value="account">FlipItDigital account issue</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <!-- Order-specific fields, shown only when 'order' selected -->
+                <div id="order-fields" style="display:none;">
+                  <div class="field-row">
+                    <div class="field">
+                      <label>Username</label>
+                      <input class="input" type="text" value="haider_q" readonly style="opacity:0.65;" />
+                      <small style="color:var(--text-3); font-size:11.5px;">Auto-filled from your session</small>
+                    </div>
+                    <div class="field">
+                      <label>Order Number <span style="color:#ff6384;">*</span></label>
+                      <input class="input" type="text" name="orderNumber" id="orderNumber" placeholder="FD-XXXXX" list="order-suggest" />
+                      <datalist id="order-suggest">
+                        <option value="FD-49281">FD-49281 - Adobe Creative Cloud 1Y</option>
+                        <option value="FD-49264">FD-49264 - ChatGPT Plus 1mo</option>
+                        <option value="FD-48720">FD-48720 - TaskFlow SaaS Bundle</option>
+                        <option value="FD-48655">FD-48655 - Aged Instagram 250K</option>
+                      </datalist>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label>Are you a Buyer or a Seller? <span style="color:#ff6384;">*</span></label>
+                    <div style="display:flex; gap:10px;">
+                      <label style="flex:1; padding:12px 14px; border:1px solid var(--border); border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:10px;">
+                        <input type="radio" name="role" value="buyer" />
+                        <span><strong style="color:var(--text-0);">Buyer</strong><br><small style="color:var(--text-3);">I purchased on this order</small></span>
+                      </label>
+                      <label style="flex:1; padding:12px 14px; border:1px solid var(--border); border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:10px;">
+                        <input type="radio" name="role" value="seller" />
+                        <span><strong style="color:var(--text-0);">Seller</strong><br><small style="color:var(--text-3);">I delivered on this order</small></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label>Describe your issue <span style="color:#ff6384;">*</span></label>
+                  <div class="rich-toolbar" role="toolbar">
+                    <button type="button" data-cmd="bold" title="Bold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 4h7a4 4 0 0 1 0 8H6zM6 12h8a4 4 0 0 1 0 8H6z"/></svg></button>
+                    <button type="button" data-cmd="italic" title="Italic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 4h-9M14 20H5M15 4L9 20"/></svg></button>
+                    <button type="button" data-cmd="underline" title="Underline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 3v9a6 6 0 0 0 12 0V3M4 21h16"/></svg></button>
+                    <button type="button" data-cmd="strikeThrough" title="Strikethrough"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M16 4H9a3 3 0 0 0-2.8 4M14 12a4 4 0 0 1 0 8H6M4 12h16"/></svg></button>
+                    <span style="width:1px; background:var(--border); margin:4px 4px;"></span>
+                    <button type="button" data-cmd="insertUnorderedList" title="Bullet list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+                    <button type="button" data-cmd="insertOrderedList" title="Numbered list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10 6h11M10 12h11M10 18h11M4 6h1M4 18h1M4 12h2"/></svg></button>
+                    <span style="width:1px; background:var(--border); margin:4px 4px;"></span>
+                    <button type="button" data-cmd="createLink" title="Hyperlink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></button>
+                  </div>
+                  <div class="rich-editor" id="ticket-body" contenteditable="true" data-placeholder="Write a comment..."></div>
+                  <small style="color:var(--text-3); font-size:11.5px; display:block; margin-top:6px;">Minimum 50 characters &middot; <span id="char-count">0</span> characters</small>
+                </div>
+
+                <div class="field">
+                  <label>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px;"><path d="M21 12.79V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.21M16 5l3 3M14 7l5-5 3 3-5 5"/></svg>
+                    Attachments <span style="color:var(--text-3); font-weight:400;">(optional)</span>
+                  </label>
+                  <div style="border:2px dashed var(--border); border-radius:10px; padding:18px; text-align:center; cursor:pointer; transition:border-color 0.2s;" id="att-drop">
+                    <input type="file" multiple accept="image/*,video/*,.pdf" id="att-input" style="display:none;" />
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <div style="margin-top:8px; font-size:13px; color:var(--text-2);">Drop files here or <span style="color:var(--cyan); font-weight:600; cursor:pointer;">browse</span></div>
+                    <div style="font-size:11px; color:var(--text-3); margin-top:4px;">Images, videos, screen recordings &middot; up to 50MB each</div>
+                  </div>
+                  <div id="att-list" style="margin-top:10px;"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Submit ticket</button>
+                <p style="font-size:11.5px; color:var(--text-3); text-align:center; margin-top:10px;">By submitting, you agree to our <a href="terms.html" style="color:var(--cyan);">Terms</a> &amp; <a href="privacy.html" style="color:var(--cyan);">Privacy Policy</a>. Disputes are typically resolved in 7-8 business days.</p>
+              </form>
+            </div>
+          </div>
+
+          <!-- TICKETS TAB -->
+          <div class="tab-pane" data-pane="tickets">
+            <div class="panel reveal">
+              <div class="panel-head">
+                <h3 style="margin:0;">My Tickets</h3>
+                <a href="#" class="btn btn-sm btn-primary" data-tab-jump="support">+ New Ticket</a>
+              </div>
+
+              <div id="ticket-list">
+                <div class="ticket-row" data-ticket="FT-9128">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <strong style="color:var(--text-0); font-size:14px;">FT-9128</strong>
+                        <span class="ticket-status review">Under Review</span>
+                      </div>
+                      <div style="font-weight:600; font-size:14px;">Order #FD-48720 &middot; Buyer claims invalid credentials</div>
+                      <div style="font-size:11.5px; color:var(--text-3); margin-top:4px;">Issue with an order &middot; Submitted May 21, 2026 &middot; Last update 2h ago</div>
+                    </div>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3); flex-shrink:0;"><path d="M9 6l6 6-6 6" stroke-linecap="round"/></svg>
+                  </div>
+                </div>
+
+                <div class="ticket-row" data-ticket="FT-9024">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <strong style="color:var(--text-0); font-size:14px;">FT-9024</strong>
+                        <span class="ticket-status open">Open</span>
+                      </div>
+                      <div style="font-weight:600; font-size:14px;">Withdrawal stuck in pending state</div>
+                      <div style="font-size:11.5px; color:var(--text-3); margin-top:4px;">Payment issue &middot; Submitted May 19, 2026</div>
+                    </div>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3); flex-shrink:0;"><path d="M9 6l6 6-6 6" stroke-linecap="round"/></svg>
+                  </div>
+                </div>
+
+                <div class="ticket-row" data-ticket="FT-8721">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <strong style="color:var(--text-0); font-size:14px;">FT-8721</strong>
+                        <span class="ticket-status resolved">Resolved</span>
+                      </div>
+                      <div style="font-weight:600; font-size:14px;">Order #FD-46902 &middot; Buyer requested category change</div>
+                      <div style="font-size:11.5px; color:var(--text-3); margin-top:4px;">Other &middot; Submitted Apr 28, 2026 &middot; Resolved May 02</div>
+                    </div>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3); flex-shrink:0;"><path d="M9 6l6 6-6 6" stroke-linecap="round"/></svg>
+                  </div>
+                </div>
+
+                <div class="ticket-row" data-ticket="FT-8302">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <strong style="color:var(--text-0); font-size:14px;">FT-8302</strong>
+                        <span class="ticket-status closed">Closed</span>
+                      </div>
+                      <div style="font-weight:600; font-size:14px;">Account verification re-upload</div>
+                      <div style="font-size:11.5px; color:var(--text-3); margin-top:4px;">Account issue &middot; Submitted Apr 15, 2026</div>
+                    </div>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3); flex-shrink:0;"><path d="M9 6l6 6-6 6" stroke-linecap="round"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ticket detail (hidden, shown on click) -->
+            <div id="ticket-detail" style="display:none;" class="panel reveal">
+              <button id="ticket-back" class="btn btn-ghost btn-sm" style="margin-bottom:14px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6" stroke-linecap="round"/></svg>
+                Back to all tickets
+              </button>
+              <div id="ticket-detail-body"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Withdraw modal -->
+  <div id="withdraw-modal" style="display:none; position:fixed; inset:0; background:rgba(7,8,16,0.86); backdrop-filter:blur(8px); z-index:9000; align-items:center; justify-content:center; padding:20px;">
+    <div style="max-width:480px; width:100%; background:linear-gradient(180deg, rgba(13,15,28,0.98), rgba(13,15,28,0.92)); border:1px solid var(--border); border-radius:18px; padding:28px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="margin:0;">Withdraw to your account</h3>
+        <button id="modal-close" class="chat-icon-btn" style="background:transparent; border:0; color:var(--text-3); cursor:pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+      </div>
+      <div style="background:rgba(0, 245, 212, 0.06); border:1px solid rgba(0, 245, 212, 0.2); border-radius:10px; padding:12px 14px; font-size:13px; margin-bottom:18px;">
+        <span style="color:var(--text-3);">Available balance:</span> <strong style="color:var(--text-0);">$3,512.40</strong>
+      </div>
+      <div class="field">
+        <label>Amount</label>
+        <input class="input" type="number" id="withdraw-amt" placeholder="0.00" max="3512.40" />
+      </div>
+      <div class="field">
+        <label>Payment method</label>
+        <select class="input" id="withdraw-method">
+          <option value="bank">Bank transfer (****4218) &middot; $2 fee</option>
+          <option value="usdt">USDT (TRC-20) &middot; $1 fee</option>
+          <option value="wise">Wise &middot; 1.5% fee</option>
+          <option value="btc">Bitcoin &middot; $1 fee</option>
+        </select>
+      </div>
+      <div id="fee-preview" style="background:rgba(255, 181, 71, 0.06); border:1px solid rgba(255, 181, 71, 0.2); border-radius:10px; padding:12px 14px; font-size:12.5px; margin:6px 0 14px; display:none;">
+        <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-3);">You requested</span><strong id="fp-amt">$0.00</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-3);">Transaction fee</span><strong id="fp-fee" style="color:#ffb547;">-$0.00</strong></div>
+        <hr style="border:0; border-top:1px dashed var(--border); margin:8px 0;" />
+        <div style="display:flex; justify-content:space-between; font-size:14px;"><span style="color:var(--text-1); font-weight:700;">You'll receive</span><strong id="fp-net" style="color:var(--cyan);">$0.00</strong></div>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" id="confirm-withdraw">Confirm withdrawal</button>
+      <p style="font-size:11px; color:var(--text-3); text-align:center; margin-top:10px;">Processing typically takes 1-24 hours depending on the method.</p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand"><a href="index.html" class="brand" style="margin-bottom:18px;"><span class="brand-logo"><svg viewBox="0 0 64 64" fill="none"><path d="M32 8 L52 18 V36 C52 46 42 54 32 56 C22 54 12 46 12 36 V18 Z" fill="white" fill-opacity=".15" stroke="white" stroke-width="3"/><path d="M24 32 L30 38 L42 24" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand-name"><b>FlipIt</b> <span>Digital</span></span></a><p>The trusted escrow marketplace for digital assets.</p></div>
+        <div class="footer-col"><h5>Marketplace</h5><ul><li><a href="browse.html">Browse</a></li><li><a href="categories.html">Categories</a></li><li><a href="how-it-works.html">How Escrow Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="sell.html">Become a Seller</a></li></ul></div>
+        <div class="footer-col"><h5>Categories</h5><ul><li><a href="browse.html?cat=social">Social Accounts</a></li><li><a href="browse.html?cat=gaming">Gaming</a></li><li><a href="browse.html?cat=ai">AI Subscriptions</a></li><li><a href="browse.html?cat=creative">Creative Software</a></li><li><a href="browse.html?cat=giftcards">Gift Cards</a></li></ul></div>
+        <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="trust-safety.html">Trust &amp; Safety</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+        <div class="footer-col"><h5>Legal</h5><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">AML / KYC</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><div>&copy; <span data-year>2026</span> FlipIt Digital. All rights reserved.</div><div>Built for trust &middot; Powered by escrow</div></div>
+    </div>
+  </footer>
+
+  <script>
+  (function() {
+    var tabs = document.querySelectorAll('.profile-tabs button');
+    var panes = document.querySelectorAll('.tab-pane');
+    function activate(name) {
+      tabs.forEach(function(b){ b.classList.toggle('active', b.dataset.tab === name); });
+      panes.forEach(function(p){ p.classList.toggle('active', p.dataset.pane === name); });
+      if (history.replaceState) history.replaceState(null, '', '#' + name);
+    }
+    tabs.forEach(function(b){ b.addEventListener('click', function(){ activate(b.dataset.tab); }); });
+    document.querySelectorAll('[data-tab-jump]').forEach(function(el){ el.addEventListener('click', function(e){ e.preventDefault(); activate(el.getAttribute('data-tab-jump')); window.scrollTo({top:0, behavior:'smooth'}); }); });
+    var initial = (location.hash || '').replace('#', '');
+    if (['wallet','support','tickets'].indexOf(initial) >= 0) activate(initial);
+
+    // Order-issue conditional fields
+    var cat = document.getElementById('ticket-category');
+    var orderFields = document.getElementById('order-fields');
+    if (cat) cat.addEventListener('change', function(){ orderFields.style.display = cat.value === 'order' ? 'block' : 'none'; });
+
+    // Rich text editor toolbar
+    var editor = document.getElementById('ticket-body');
+    var charCount = document.getElementById('char-count');
+    document.querySelectorAll('.rich-toolbar button').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.preventDefault();
+        var cmd = b.dataset.cmd;
+        if (cmd === 'createLink') {
+          var url = prompt('Enter the URL:');
+          if (url) document.execCommand('createLink', false, url);
+        } else {
+          document.execCommand(cmd, false, null);
+        }
+        editor.focus();
+      });
+    });
+    if (editor) editor.addEventListener('input', function(){ charCount.textContent = (editor.innerText || '').trim().length; });
+
+    // Attachments
+    var attDrop = document.getElementById('att-drop');
+    var attInput = document.getElementById('att-input');
+    var attList = document.getElementById('att-list');
+    var attached = [];
+    function renderAtts() {
+      attList.innerHTML = attached.map(function(f, i){
+        return '<span class="att-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 12.79V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6.21M16 5l3 3M14 7l5-5 3 3-5 5"/></svg>' + f.name + '<button type="button" data-rm="' + i + '">&times;</button></span>';
+      }).join('');
+      attList.querySelectorAll('[data-rm]').forEach(function(b){ b.addEventListener('click', function(){ attached.splice(parseInt(b.dataset.rm), 1); renderAtts(); }); });
+    }
+    if (attDrop) {
+      attDrop.addEventListener('click', function(){ attInput.click(); });
+      attDrop.addEventListener('dragover', function(e){ e.preventDefault(); attDrop.style.borderColor = 'var(--cyan)'; });
+      attDrop.addEventListener('dragleave', function(){ attDrop.style.borderColor = ''; });
+      attDrop.addEventListener('drop', function(e){ e.preventDefault(); attDrop.style.borderColor = ''; for (var i=0;i<e.dataTransfer.files.length;i++) attached.push(e.dataTransfer.files[i]); renderAtts(); });
+      attInput.addEventListener('change', function(){ for (var i=0;i<attInput.files.length;i++) attached.push(attInput.files[i]); renderAtts(); attInput.value = ''; });
+    }
+
+    // Ticket form submit
+    var form = document.getElementById('ticket-form');
+    if (form) form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var body = (editor.innerText || '').trim();
+      if (!cat.value) { alert('Please select a topic.'); return; }
+      if (body.length < 50) { alert('Please describe your issue in at least 50 characters.'); return; }
+      var newId = 'FT-' + Math.floor(9200 + Math.random() * 800);
+      alert('Ticket submitted! Reference: ' + newId + '\nYou\'ll receive a confirmation email and an in-platform notification. Disputes are typically resolved in 7-8 business days.');
+      form.reset();
+      editor.innerHTML = '';
+      attached = [];
+      renderAtts();
+      orderFields.style.display = 'none';
+      activate('tickets');
+    });
+
+    // Ticket row click - open detail
+    var detailEl = document.getElementById('ticket-detail');
+    var detailBody = document.getElementById('ticket-detail-body');
+    document.querySelectorAll('.ticket-row').forEach(function(row){
+      row.addEventListener('click', function(){
+        var id = row.dataset.ticket;
+        var status = row.querySelector('.ticket-status').textContent;
+        var title = row.querySelector('div[style*="font-weight:600"]').textContent;
+        var sub = row.querySelector('div[style*="font-size:11.5px"]').textContent;
+        detailBody.innerHTML = '<h2 style="margin-top:0;">' + title + '</h2>' +
+          '<div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;"><strong>' + id + '</strong> <span class="ticket-status ' + (status.toLowerCase().includes('review')?'review':status.toLowerCase().includes('resolved')?'resolved':status.toLowerCase().includes('closed')?'closed':'open') + '">' + status + '</span></div>' +
+          '<div style="background: rgba(108, 92, 231, 0.06); border:1px solid rgba(108, 92, 231, 0.2); border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11.5px; color:var(--text-3);">' + sub + '</div></div>' +
+          '<div style="border-left:3px solid var(--cyan); padding:10px 14px; background:rgba(0, 245, 212, 0.04); border-radius:0 10px 10px 0; margin-bottom:10px;"><strong style="color:var(--cyan); font-size:13px;">Support Team &middot; 2h ago</strong><p style="margin:6px 0 0; font-size:13.5px; color:var(--text-2);">We\'ve received your evidence and are reviewing the credentials log together with the buyer\'s screen recording. We\'ll get back to you within 7-8 business days. Please keep all original chat history intact.</p></div>' +
+          '<div style="border-left:3px solid var(--text-3); padding:10px 14px; background:rgba(255,255,255,0.02); border-radius:0 10px 10px 0;"><strong style="font-size:13px;">You &middot; ' + sub.split('Submitted ')[1] + '</strong><p style="margin:6px 0 0; font-size:13.5px; color:var(--text-2);">Submitted full evidence pack with screen recording and chat logs.</p></div>';
+        document.getElementById('ticket-list').style.display = 'none';
+        document.querySelector('[data-tab-jump]').style.display = 'none';
+        detailEl.style.display = 'block';
+      });
+    });
+    var ticketBack = document.getElementById('ticket-back');
+    if (ticketBack) ticketBack.addEventListener('click', function(){
+      document.getElementById('ticket-list').style.display = 'block';
+      document.querySelector('[data-tab-jump]').style.display = '';
+      detailEl.style.display = 'none';
+    });
+
+    // Withdraw modal
+    var modal = document.getElementById('withdraw-modal');
+    var amt = document.getElementById('withdraw-amt');
+    var method = document.getElementById('withdraw-method');
+    var fp = document.getElementById('fee-preview');
+    var fees = { bank: 2, usdt: 1, btc: 1, wise: 0 };
+    function updateFee() {
+      var v = parseFloat(amt.value) || 0;
+      var fee = fees[method.value];
+      if (method.value === 'wise') fee = v * 0.015;
+      var net = Math.max(0, v - fee);
+      document.getElementById('fp-amt').textContent = '$' + v.toFixed(2);
+      document.getElementById('fp-fee').textContent = '-$' + fee.toFixed(2);
+      document.getElementById('fp-net').textContent = '$' + net.toFixed(2);
+      fp.style.display = v > 0 ? 'block' : 'none';
+    }
+    document.querySelectorAll('[data-withdraw]').forEach(function(b){
+      b.addEventListener('click', function(){ modal.style.display = 'flex'; });
+    });
+    document.getElementById('modal-close').addEventListener('click', function(){ modal.style.display = 'none'; });
+    modal.addEventListener('click', function(e){ if (e.target === modal) modal.style.display = 'none'; });
+    if (amt) amt.addEventListener('input', updateFee);
+    if (method) method.addEventListener('change', updateFee);
+    document.getElementById('confirm-withdraw').addEventListener('click', function(){
+      var v = parseFloat(amt.value) || 0;
+      if (v <= 0) { alert('Enter an amount.'); return; }
+      if (v > 3512.40) { alert('Amount exceeds Available Balance.'); return; }
+      alert('Withdrawal request for $' + v.toFixed(2) + ' submitted. Tracking ID: WD-' + Math.floor(Math.random() * 99999) + '. Processing typically takes 1-24 hours.');
+      modal.style.display = 'none';
+      amt.value = ''; fp.style.display = 'none';
+    });
+  })();
+  </script>
+  <script src="assets/js/main.js?v=7" defer></script>
+</body>
+</html>
